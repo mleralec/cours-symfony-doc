@@ -1,11 +1,11 @@
 
-  - [Introduction](introduction.md)
+  - Introduction
     - [Préambule](introduction.md#préambule)
     - [Présentation de Symfony](introduction.md#présentation-de-symfony)
     - [Installation](introduction.md#installation)
 
 
-  - [TP 1](tp1.md)
+  - TP 1
     - [Notre première page](tp1.md#notre-première-page)
     - [Introduction à Twig](tp1.md#introduction-à-twig)
     - [Créer des données](tp1.md#créer-des-données)
