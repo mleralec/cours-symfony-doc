@@ -58,8 +58,8 @@ Nous utilisons ici la commande [create-project](https://getcomposer.org/doc/03-c
 Récupérez les fichiers `Dockerfile` et `docker-compose.yml` et placez les à la racine de votre projet.
 
 ```bash
-curl https://gitlab.com/mleralec/cours-symfony/Dockerfile > Dockerfile
-curl https://gitlab.com/mleralec/cours-symfony/docker-compose.yml > docker-compose.yml
+curl https://cours-symfony.netlify.com/Dockerfile > Dockerfile
+curl https://cours-symfony.netlify.com/docker-compose.yml > docker-compose.yml
 ```
 
 Si vous regardez le contenu du `docker-compose.yml`, vous pouvez voir qu'on appelle des variables d'environnement pour la connexion à la base de données :
