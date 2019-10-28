@@ -7,5 +7,5 @@
 
 ---
 
-- [Dockerfile](/Dockerfile)
-- [docker-compose.yml](/docker-compose.yml)
+- [Dockerfile](https://cours-symfony.netlify.com/Dockerfile)
+- [docker-compose.yml](https://cours-symfony.netlify.com/docker-compose.yml)
