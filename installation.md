@@ -1,4 +1,4 @@
-# TP Symfony - LP WEB 2019/2020 - Mickaël Le Ralec
+# Introduction
 
 - [ ] Présentation de Symfony
 - [ ] Installation
