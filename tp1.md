@@ -50,9 +50,9 @@ Rendez-vous sur `***.lpweb-lannion.fr:7777/article` pour découvrir votre premi�
 
 Twig est un moteur de template qui permet d'écrire nos vues très simplement avec une syntaxe plus légère et moins verbeuse que du PHP. Voir la [documentation de Twig](https://twig.symfony.com/)
 
-Jettons un oeil à notre vue dans `templates/article/index.html.twig`.
+Jetons un oeil à notre vue dans `templates/article/index.html.twig`.
 La première ligne permet d'étendre d'un layout de base.
-Ce layout nous permet de définir des sections globales au site pour ne pas à avoir à les dupliquer (head, menu, footer...)
+Ce layout nous permet de définir des sections globales au site pour ne pas à avoir à les dupliquer (head, menu, footer...).
 
 Il suffit de définir des `block` via `{% block body %}{% endblock %}` dans le layout et je pourrai ensuite l'utiliser dans ma vue de la même manière.
 
@@ -98,7 +98,7 @@ Importez ce fichier `_nav.html.twig` dans le fichier `base.html.twig` avec la fo
 
 ### Créer des données
 
-Jusqu'ici nous avons parlé du Controlleur et de la Vue, il manque donc la partie Model (la liaison entre notre application et la base de données).  
+Jusqu'ici, nous avons parlé du Controlleur et de la Vue, il manque donc la partie Model (la liaison entre notre application et la base de données).  
 Dans Symfony, une entité représente une table. Nous allons commencer par créer une entité **Article**, qui possèdera les champs suivants :
 
 | Nom       | Type         | Nullable |
@@ -124,15 +124,14 @@ Le deuxième fichier représente le "repository", c'est-à-dire le fichier de s�
 
 > Symfony fait le choix de séparer la classe du repository, c'est pratique pour s'y retrouver, surtout sûr de gros projets. D'autres Frameworks font tout directement dans le Model, c'est le cas de Laravel par exemple.
 
-La commande `make:entity` ne fait que créer des fichiers dans notre projet Symfony, pour modifier la structure de notre base de données, il faut effectuer `make:migration`.  
-Cette commande demande à Symfony de vérifier les différences qu'il existe entre notre structure SQL actuelle et nos fichiers dans le répertoire `src/Entity`. Symfony va ensuite générer un fichier contenant des instructions SQL si celui-ci détecte des différences.
+Effectuez la commande `make:migration` pour demander à Symfony de vérifier s'il existe des différences entre notre structure SQL actuelle et nos fichiers dans le répertoire `src/Entity`. Symfony va ensuite générer une migration contenant des instructions SQL si celui-ci détecte des différences.
 
-La commande génère ensuite un fichier dans le répertoire `src/Migrations`, la fonction `up` ajoute les nouveautés depuis la dernière migration alors que la fonction `down` annule cette migration.
+Ce fichier de migration se trouve dans le répertoire `src/Migrations`, la fonction `up` ajoute les nouveautés depuis la dernière migration alors que la fonction `down` annule cette migration.
 Il faut maintenant lancer la commande `doctrine:migrations:migrate` pour appliquer la fonction `up` de la migration.
 
 Il ne reste plus qu'à vérifier dans PhpMyAdmin que la table Article a bien été ajoutée.
 
-> Ce système de migrations est très performant et utilisé par l'ensemble des Frameworks modernes. Celui-ci permet de récupérer le projet via git par exemple, il suffit ensuite de lancer la commande `doctrine:migrations:migrate` pour effectuer toutes les migrations du projet et avoir la structure de la base de données à jour avec le projet.
+> Ce système de migrations est très performant et utilisé par l'ensemble des Frameworks modernes. Celui-ci permet de récupérer le projet via un repo git, et de lancer la commande `doctrine:migrations:migrate` pour effectuer toutes les migrations du projet et avoir la structure de la base de données à jour avec le projet.
 
 Nous allons maintenant utiliser une librairie qui nous permet de remplir notre table avec une commande Symfony plutôt que d'avoir à créer les articles directement dans PhpMyAdmin. Pour cela nous avons besoin de [orm-fixtures](https://packagist.org/packages/doctrine/doctrine-fixtures-bundle). Nous allons également utiliser une librairie pour générer des données "fake" à notre place, il s'agit de [Faker](https://packagist.org/packages/fzaninotto/faker)
 
@@ -193,8 +192,8 @@ Pour utiliser les données d'une entité, nous avons besoin de son Repository.
 $articleRepository = $this->getDoctrine()->getRepository(Article::class);
 ```
 
-Nous avons maintenant accès au Repository de la classe Article, pour rappel, celui-ci se trouve dans `src/Repository/ArticleRepository`, nous pouvons voir toutes les méthodes disponibles. Par défaut, aucune méthode n'est disponible. Si on regarde plus en profondeur dans le code, nous pouvons voir que notre Repository étends de la classe `EntityRepository` dans le dossier `/vendor/doctrine/orm/lib/Doctrine/ORM/`.  
-Nous pouvons voir que beaucoup de méthodes sont définies pour nous.
+Nous avons maintenant accès au Repository de la classe Article, pour rappel, celui-ci se trouve dans `src/Repository/ArticleRepository`. Par défaut, aucune méthode n'est disponible dans ce fichier. Si on regarde plus en profondeur dans le code, nous pouvons voir que notre Repository étends de la classe `EntityRepository` dans le dossier `/vendor/doctrine/orm/lib/Doctrine/ORM/`.  
+NDans ce fichier, nous pouvons voir que beaucoup de méthodes sont définies pour nous : **find**, **findOneBy**, **finAll**...
 
 Commençons par récupérer tous les articles :
 
@@ -215,7 +214,7 @@ public function index()
 ```
 
 
-Symfony nous aide encore une fois et nous propose une autre syntaxe plus simple à écrire qui consiste à bénéficier de l'injection de dépendances de Symfony en récupérant le Repository directement en paramètre de la méthode. En effet, en précisant le type qui est attendu dans la variable, Symfony sait ce qu'il doit nous retourner :
+Symfony nous aide encore une fois et nous propose une autre syntaxe plus simple qui consiste à bénéficier de l'injection de dépendances en récupérant le Repository directement en paramètre de la méthode. En effet, en précisant le type qui est attendu dans la variable, Symfony sait ce qu'il doit nous retourner :
 
 ```php
 public function index(ArticleRepository $articleRepository)
@@ -228,16 +227,16 @@ Nous pouvons ensuite renvoyer la variable `$articles` à notre vue, comme l'exem
 Utilisez Twig pour afficher ensuite la liste des articles dans votre vue.
 
 Pour chaque article :
--   afficher son titre avec un lien vers `/articles/{id de l'article}`
--   afficher les 300 premiers caractères du contenu suvivi d'un `... voir plus` (filtre slice)
+-   affichez son titre avec un lien vers `/articles/{id de l'article}`
+-   affichez les 300 premiers caractères du contenu suvivi d'un `... voir plus` (filtre slice)
 -   le **...voir plus** est également un lien vers `/articles/{id de l'article}`
--   afficher la date avec un format 24/12/2019 ainsi que le nom de l'auteur
+-   affichez la date avec un format 24/12/2019 ainsi que le nom de l'auteur
 
 ---
 
 ### Affichage d'une page article
 
-Commencer par créer une nouvelle méthode `show` dans votre `ArticleController` qui prend en paramètre l'id de l'article avec la route suivante : `@Route("/article/{id}", name="article.show")`
+Commencez par créer une nouvelle méthode `show` dans votre `ArticleController` qui prend en paramètre l'id de l'article avec la route suivante : `@Route("/article/{id}", name="article.show")`
 
 Récupérez l'article associé à l'id reçu via la fonction `find` du Repository. Cette fonction prend par défaut l'id de l'article. Retournez ensuite l'article à la vue `templates/article/show.html.twig`.
 
@@ -248,7 +247,7 @@ if (!$article) {
 }
 ```
 
-Cette nouvelle vue doit étendre du template `base.html.twig`, vous afficherez : le titre de l'article, son contenu, son titre et sa date de création avec le format 24/12/2019. Ajoutez également un lieu **retour** qui permet de retourner à la liste des articles.
+Cette nouvelle vue doit étendre du template `base.html.twig`, vous afficherez : le titre de l'article, son contenu, son auteur et sa date de création avec le format 24/12/2019. Ajoutez également un lieu **retour** qui permet de retourner à la liste des articles.
 
 Profitez-en pour modifier les liens dans notre template `index.html.twig` avec la fonction `path` de Twig plutôt que d'avoir des liens en dur. 
 `<a href="{{ path('article.show', {'id' : article.id}) }}">`
@@ -260,22 +259,22 @@ Cette méthode permet de changer les urls des routes sans avoir à modifier tout
 
 Actuellement, nos urls ne sont pas très jolies : `mon-site/article/1`, en général, on affiche un slug équivalent au titre de l'article : `Titre de mon 1er Article` = `titre-de-mon-1er-article`.
 
-Modifiez ensuite l'entité `Article` pour ajouter un champ `slug` ainsi que son getter/setter.
+Modifiez l'entité `Article` pour ajouter un champ `slug` ainsi que son getter/setter.
 On effectue ensuite la commande `make:migration` pour que Symfony détecte le changement de la structure et génère un fichier de migration.
 Regardez ce nouveau fichier de migration et si il vous semble convenable, utilisez la commande `doctrine:migrations:migrate`.
 
 Vous pouvez vérifier la nouvelle structure dans PHPMyAdmin. Dans notre fichier `src/DataFixtures/ArticleFixtures` nous devons maintenant mettre à jour la génération de nos articles avec ce nouveau champ `slug`.
 
-Mettez à jour le fichier `ArticleFixtures` en rajoutant le slug. Faker possède déjà une fonction slug pour nous :
+Dans le fichier `ArticleFixtures`, rajoutez le slug. Faker possède déjà une fonction slug pour nous :
 ```php
 $article
     ->setTitle($title)
     ->setSlug($faker->slug())
 ```
 
-Générez ensuite de nouveaux articles avec la commande `doctrine:fixtures:load`, vérifiez ensuite dans PHPMyAdmin que le titre de l'article correspond bien à son slug.
+Générez de nouveaux articles avec la commande `doctrine:fixtures:load`.
 
 Replacez la route `article.show` avec le slug `@Route("/article/{slug}", name="article.show")`. 
-Vous pouvez ensuite récupérer l'article via `$repository->findOneBy(['slug' => $slug]);`.
+Vous pouvez ensuite récupérer un article avec son slug via la fonction **findOneBy** de Doctrine : `$repository->findOneBy(['slug' => $slug]);`.
 
 Il ne reste plus qu'à modifier les liens sur le template `article/index.html.twig` avec le slug et vérifier que tout fonctionne à nouveau.
