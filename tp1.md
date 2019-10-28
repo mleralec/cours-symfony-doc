@@ -22,7 +22,7 @@ On constate que la route est définie sous forme d'annotations directement au-de
 
 Modifiez cette route pour changer le nom par `article.index`.
 
-> **Comment Symfony sait-il ou chercher les routes ?**  
+> **Comment Symfony sait-il où chercher les routes ?**  
 > C'est dans le fichier `config/routes/annotations.yaml` qu'on demande à Symfony de rechercher toutes les routes sous formes d'annotations dans le répertoire `src/Controller`.
 
 Disséquons maintenant le code de la méthode `index` du Controller:
@@ -51,7 +51,7 @@ Rendez-vous sur `***.lpweb-lannion.fr:7777/article` pour découvrir votre premi�
 Twig est un moteur de template qui permet d'écrire nos vues très simplement avec une syntaxe plus légère et moins verbeuse que du PHP. Voir la [documentation de Twig](https://twig.symfony.com/)
 
 Jettons un oeil à notre vue dans `templates/article/index.html.twig`.
-La première ligne permet d'étendre d'un gabarit pré-défini.  
+La première ligne permet d'étendre d'un layout de base.
 Ce layout nous permet de définir des sections globales au site pour ne pas à avoir à les dupliquer (head, menu, footer...)
 
 Il suffit de définir des `block` via `{% block body %}{% endblock %}` dans le layout et je pourrai ensuite l'utiliser dans ma vue de la même manière.
