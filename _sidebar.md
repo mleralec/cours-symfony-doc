@@ -13,4 +13,12 @@
   - [Affichage d'une page article](tp1.md#affichage-d39une-page-article)
   - [Ajout d'un champ slug](tp1.md#ajout-d39un-champ-slug)
 
+- TP 2
+
+  - [Ajout d'une catégorie](tp2.md#ajout-d39une-catégorie)
+  - [Page /category et /category/{slug}](tp2.md#page-category-et-categoryslug)
+  - [Création d'un formulaire](tp2.md#création-d39un-formulaire)
+  - [Traiter le formulaire](tp2.md#traiter-le-formulaire)
+  - [Validation](tp2.md#validation)
+
 - [Liens utiles](links.md)
