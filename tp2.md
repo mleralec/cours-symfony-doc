@@ -1,7 +1,7 @@
 # TP 2
 
 -   [ ] Ajout d'une catégorie
--   [ ] Ajout page /category et /category/{slug}
+-   [ ] Page /category et /category/{id}
 -   [ ] Création d'un formulaire
 -   [ ] Traiter le formulaire
 -   [ ] Validation
@@ -15,7 +15,6 @@ Créez une entité **Category** avec les champs suivants :
 | Nom         | Type         | Nullable |
 | ----------- | ------------ | -------- |
 | name        | string (255) | no       |
-| slug        | string (255) | no       |
 | description | text         | no       |
 
 Et enfin, ajoutez le champ `articles` avec les propriétés suivantes :
@@ -30,7 +29,7 @@ On demande ici qu'une catégorie puisse contenir plusieurs articles. Regardez l'
 
 Générez une nouvelle migration pour prendre en compte nos derniers changements.
 
-Avant de migrer, nous devons supprimer nos données, en effet, nous demandons un champ `category_id` non null dans notre table `Article`, le problème ici, c'est que nous avons déjà des articles existants. Si nous effectuons notre migration maintenant, Symfony va lever une erreur à ce sujet. Le plus simple est donc de supprimer notre base et de la recréer dans la foulée.
+Avant de migrer, nous devons supprimer nos données, en effet, nous demandons un champ `category_id` non null dans notre table `Article`, le problème ici, c'est que nous avons déjà des articles existants. Si nous effectuons notre migration maintenant, Symfony va lever une erreur à ce sujet. Le plus simple est donc de supprimer votre base et de la recréer dans la foulée.
 
 Nous pouvons simplement le faire avec deux commandes fournies par Symfony :
 ```bash
@@ -61,7 +60,6 @@ public function load(ObjectManager $manager)
         $category = $categories[$index];
 
         $article->setTitle($title)
-                ->setSlug($faker->slug())
                 ->setAuthor($faker->name())
                 ->setContent($faker->text(1500))
                 ->setCreatedAt($faker->dateTimeThisYear())
@@ -80,18 +78,18 @@ Une solution à ce problème est d'utiliser la méthode `getDependencies` qui do
 
 ---
 
-### Page /category et /category/{slug}
+### Page /category et /category/{id}
 
 Créez un Controller `CategoryController` qui contient :
 
 -   une méthode `index` pour la route **/category** qui liste les différentes catégories
--   une méthode `show` pour la route **/category/{slug}** qui affiche tous les articles d'une catégorie
+-   une méthode `show` pour la route **/category/{id}** qui affiche tous les articles d'une catégorie
 
 Pour la méthode **index**, vous renverrez la vue `index.html.twig` que vous devez créer dans `templates/category/`.
 Sur cette vue sera affichée l'ensemble des catégories. Pour chacune de celles-ci, vous devez afficher :
 
 -   le nom de la catégorie qui contient un lien vers la route **category.show**
--   la description de la catégorie tronquée du 1er au 100ème caractères suivi d'un lien 'voir plus...'
+-   la description de la catégorie
 -   le nombre d'articles contenus dans la catégorie
 
 Pour la méthode **show**, vous renverrez la vue `show.html.twig` que vous devez créer dans `templates/category`.
@@ -113,7 +111,7 @@ public function __construct(CategoryRepository $repository)
 }
 ```
 
-> Vous avez maintenant accès `$this->repository` dans toutes les méthodes de votre Controller.
+> Vous avez maintenant accès à `$this->repository` dans toutes les méthodes de votre Controller.
 
 Pour la méthode `show`, n'oubliez pas de renvoyer une 404 si aucune catégorie n'est trouvée.
 
@@ -125,13 +123,22 @@ if (!$category) {
 
 Ajoutez ensuite le nom de la catégorie avec un lien vers celle-ci dans le détail d'un article (route `article.show`).
 
+Vous pouvez également créer une pagination sur la page `category.show` avec 10 articles par page. Dans ce cas là, la pagination sera un peu différente, vous êtes obligé de sortir une variable `articles`, et ne plus utiliser `category.articles` dans notre vue :
+```php
+$articles = $paginator->paginate(
+    $category->getArticles(),
+    $request->query->getInt('page', 1),
+    10
+);
+```
+
 ---
 
 ### Création d'un formulaire
 
 Créez une méthode `create` dans le Controlleur `ArticleController` sur la route `/article/new`. Cette route retourne la vue `create.html.twig` que vous devez créer dans `templates/article/`.
 
-Cette méthode doit être définie avant la méthode `show`, sinon Symfony essaiera de convertir "new" en slug (paramètre de la méthode show).
+Cette méthode doit être définie avant la méthode `show`, sinon Symfony essaiera de convertir "new" en id (paramètre de la méthode show).
 
 Symfony utilise un Form builder, ce qui nous permet de générer les formulaires directement en PHP. Commencez par créer un formulaire via la commande `php bin/console make:from` avec comme attributs :
 
@@ -152,7 +159,7 @@ return $this->render('article/new.html.twig', [
 ]);
 ```
 
-On renvoit ensuite la méthode `createView` qui permet ensuite à Twig de l'utiliser.
+On renvoie ensuite la méthode `createView` qui permet ensuite à Twig de l'utiliser.
 Pour l'afficher dans Twig, utilisez simplement la méthode `form` en passant `articleForm` en paramètre.
 
 Si vous essayez maintenant de vous rendre sur la page `/article/new`, vous devriez tomber sur une erreur. En effet, Twig affiche les différentes catégories dans un select. Seulement, Twig ne sait pas quoi afficher ici, il appelle la méthode magique `__toString` sur l'entité Catégorie mais celle-ci n'est pas encore définie.
@@ -166,11 +173,11 @@ On peut voir que Symfony génère un formulaire complet avec des champs adaptés
 - Input de type date pour le *createdAd*
 - Select généré automatiquement pour les différentes catégories
 
-En examinant le code HMTL généré, on peut constater que Symfony injecte également un **CSRF token**, qui permet de soumettre ce formulaire uniquement via notre page. En savoir plus sur le [CSRF](https://symfony.com/doc/current/security/csrf.html).
+En examinant le code HTML généré, on peut constater que Symfony injecte également un **CSRF token**, qui permet de soumettre ce formulaire uniquement via notre page. En savoir plus sur le [CSRF](https://symfony.com/doc/current/security/csrf.html).
 
-Nous pouvons commencer par supprimer le champs **createdAt** qui est généré à la création de l'article.
+Nous pouvons commencer par supprimer le champ **createdAt** dans `ArticleType`. Celui-ci sera généré à la création de l'article.
 
-Commencons par rajouter un bouton "submit" dans notre formulaire. Pour ajouter du contenu dans notre formulaire, nous devons modifier son implémentation dans Twig :
+Ajoutez un bouton "submit" dans le formulaire. Pour ajouter du contenu dans notre formulaire, nous devons modifier son implémentation dans Twig :
 
 ```html
     {{ form_start(articleForm) }}
@@ -192,13 +199,13 @@ Ici, nous devons utiliser la fonction `form_start` et `form_end` de Twig pour pl
 
 Nous pouvons également personnaliser ce template en définissant nous même les labels. Le code suivant remplace la fonction `form_row` :
 ```html
-<div lass="form-group">
+<div class="form-group">
     <label for="article_title">Titre de l'article</label>
     {{ form_widget(articleForm.title) }}
 </div>
 ```
 
-Nous pouvons maintenant ajouter des attributs aux inputs/selects dans le fichier `ArticleType`.
+Nous pouvons maintenant ajouter des attributs aux inputs/selects dans le fichier `ArticleType` :
 ```php
 ->add('title', null, [
     'attr' => [
@@ -210,8 +217,8 @@ Nous pouvons maintenant ajouter des attributs aux inputs/selects dans le fichier
 
 La fonction `add` du formBuilder prend en premier paramètre le champ de l'entité, en deuxième le type de l'input (laissez null pour avoir la valeur qu'à généré Symfony par défaut) et enfin en troisième paramètre un tableau d'options.
 
-Sur la vue `article/new.html.twig`, profitez en pour rajouter un lien "annuler" qui re-dirige sur la route `article.index`.
-Sur la vue `article/index.html.twig`, rajoutez un bouton "Créer un article" qui re-dirige sur la route `article.create`.
+Sur la vue `article/new.html.twig`, profitez en pour rajouter un lien "annuler" qui redirige sur la route `article.index`.
+Sur la vue `article/index.html.twig`, ajoutez un bouton "Créer un article" qui redirige sur la route `article.create`.
 
 ---
 
@@ -227,12 +234,12 @@ if ($articleForm->isSubmitted()) {
 }
 ```
 
-Nous pouvons voir que les champs **slug** et **createdAt** restent `null`, nous allons donc devoir les renseigner nous même lorsque le formulaire est soumis.
-Une fois que votre article est complet, utilisez le Manager de Symfony pour sauvegarder l'article. Vous pouvez maintenant re-diriger l'utilisateur sur ce nouvel article avec la fonction `redirectToRoute` qui prend en premier paramètre le nom de la route et en second les paramètres de cette route.
+Nous pouvons voir que le champ **createdAt** reste `null`, nous allons donc devoir le renseigner nous même lorsque le formulaire est soumis.
+Une fois que votre article est complet, utilisez le Manager de Symfony pour sauvegarder l'article. Vous pouvez maintenant rediriger l'utilisateur sur ce nouvel article avec la fonction `redirectToRoute` qui prend en premier paramètre le nom de la route et en second les paramètres de cette route.
 
 ```php
 return $this->redirectToRoute('article.show', [
-    'slug' => $article->getSlug()
+    'id' => $article->getId()
 ]);
 ```
 
@@ -269,7 +276,7 @@ if ($articleForm->isSubmitted() && $articleForm->isValid()) {
 }
 ```
 
-Par défaut, Symfony rajoute une règle de validation côté client et nous empêche donc de vérifier notre validation.  
+Par défaut, Symfony ajoute une règle de validation côté client et nous empêche donc de vérifier notre validation.  
 Vous pouvez supprimer l'attribut `pattern=".{5,}"` et renvoyer le formulaire. La page se recharge, mais rien ne se passe, en effet, nous n'avons pas encore affiché nos erreurs.  
 Vous pouvez le faire via la fonction `form_errors()` qui prend en paramètre le champ en question.  
 Essayez à nouveau, vous devriez voir une erreur qui apparaît.

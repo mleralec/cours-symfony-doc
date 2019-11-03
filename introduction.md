@@ -1,5 +1,6 @@
 # Introduction
 
+- [ ] Préambule
 - [ ] Présentation de Symfony
 - [ ] Installation
 
@@ -16,7 +17,7 @@ Dans les différents TPs, nous allons construire un blog pour parcourir les diff
 ### Présentation de Symfony
 
 Symfony est un des Frameworks PHP les plus utilisés à l'heure actuelle avec Laravel. 
-Il est organisé sous forme de composants qui peuvent être utilisés séparément, mais qui mit ensemble forment un Framework très puissant.
+Il est organisé sous forme de composants qui peuvent être utilisés séparément, mais qui mis ensemble forment un Framework très puissant.
 
 En effet, Symfony dispose de tout ce dont un développeur à besoin pour créer un site professionnel : ORM, moteur de Template, gestion des traductions, du cache, des Assets, Form Builder, client de test...
 
@@ -29,8 +30,8 @@ Les principaux avantages de Symfony sont :
 - Documentation très fournie
 - Made in France ! (compétence recherchée en France)
 
-Symfony utilise la Programation Orienté Objet (éritage, namespaces, autoloading, injection de dépendances...etc.) Si vous n'êtes pas familier avec ces termes, je vous conseille de jeter un oeil à cette [formation sur la POO en PHP](https://www.grafikart.fr/formations/programmation-objet-php).  
-Symfony utilise également le pattern MVC (Model-Vue-Controller) pour organiser le code. Ce Design Pattern est utilisé dans la majorité des Frameworks modernes, si cela ne vous dit rien, vous pouvez regarder [ce cours](https://openclassrooms.com/fr/courses/4670706-adoptez-une-architecture-mvc-en-php).
+Symfony utilise la Programmation Orienté Objet (héritage, Namespaces, Autoloading, injection de dépendances...etc.) Si vous n'êtes pas familier avec ces termes, je vous conseille de jeter un oeil à cette [formation sur la POO en PHP](https://www.grafikart.fr/formations/programmation-objet-php).  
+Symfony utilise également le pattern MVC (Model-Vue-Controller) pour l'organisation du code. Ce Design Pattern est utilisé dans la majorité des Frameworks modernes, si cela ne vous dit rien, vous pouvez regarder [ce cours](https://openclassrooms.com/fr/courses/4670706-adoptez-une-architecture-mvc-en-php).
 
 Symfony utilise également Composer pour gérer ses dépendances.
 Composer est un gestionnaire de dépendances pour PHP, (comme NPM pour NodeJS ou PIP pour Python). Il est utilisé dans la majorité des projets PHP et par l'ensemble des Frameworks.
@@ -43,7 +44,7 @@ Nous utiliserons Composer via Docker dans ce cours, vous n'avez donc pas besoin 
 ## Installation
 
 Nous allons utiliser Docker dans ce cours pour installer nos différents services (PHP, MySQL, PHPMyAdmin).   
-Commençons par créer un projet Symfony à l'aide de Composer. (Nous utilisons une image Docker de Composer pour ne pas à avoir à installer composer sur notre serveur. Pour plus d'informations sur l'image Docker de Composer, rendez-vous sur [la documentation de l'image.](https://hub.docker.com/_/composer/))
+Commencez par créer un projet Symfony à l'aide de Composer. (Nous utilisons une image Docker de Composer pour ne pas à avoir à installer Composer sur notre serveur. Pour plus d'informations sur l'image Docker de Composer, rendez-vous sur [la documentation de l'image.](https://hub.docker.com/_/composer/))
 
 ```bash
 docker run --rm --interactive --tty \
@@ -79,8 +80,8 @@ Vous devez également remplacer la ligne qui commence par `DATABASE_URL=...` ave
 
 Vous pouvez ensuite lancer vos conteneurs via docker-compose : `docker-compose up -d`
 
-Testez ensuite d'accéder à votre site via `***.lpweb-lannion.fr:7777`.  
-Essayez ensuite de vous connectez à votre PhpMyAdmin avec vos identifiants. Si la connexion fonctionne, vous pouvez passer au TP 1.
+Testez ensuite la connexion à votre site via `***.lpweb-lannion.fr:7777`.  
+Essayez ensuite de vous connecter à votre PhpMyAdmin avec vos identifiants. Si la connexion fonctionne, vous pouvez passer au TP 1.
 
 ---
 
@@ -88,3 +89,5 @@ Essayez ensuite de vous connectez à votre PhpMyAdmin avec vos identifiants. Si 
 > Comme votre projet est sur votre serveur, vous pouvez utiliser [SSHFS](https://doc.ubuntu-fr.org/sshfs) pour accéder au système de fichier de votre serveur directement sur votre machine.
 
 > Je vous conseille d'utiliser une extension PHP sur votre éditeur pour importer automatiquement les Namespaces. Pour VSCode, il existe [PHP Namespace Resolver](https://marketplace.visualstudio.com/items?itemName=MehediDracula.php-namespace-resolver).
+
+> Je vous conseille également d'utiliser une extension pour TWIG, pour VSCode, il existe [Twig Language](https://marketplace.visualstudio.com/items?itemName=mblode.twig-language).

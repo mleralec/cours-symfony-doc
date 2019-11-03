@@ -3,9 +3,9 @@
 -   [ ] Notre première page
 -   [ ] Introduction à Twig
 -   [ ] Créer des données
--   [ ] Utilisons ces données
+-   [ ] Utilisons ces données avec Doctrine
 -   [ ] Affichage d'une page article
--   [ ] Ajout d'un champ slug
+-   [ ] Mise en place d'une pagination
 
 ---
 
@@ -16,9 +16,9 @@ Créez un Controller `ArticleController` à l'aide de la commande `php bin/conso
 Cette commande crée également :
 
 -   une route définie dans le Controller (`src/Controller/ArticleController`)
--   une vue dans le dossier `templates/article/index.html.twig`.
+-   une vue dans le dossier `templates/article/`.
 
-On constate que la route est définie sous forme d'annotations directement au-dessus de la méthode. Il existe plusieurs méthodes pour créer des routes sur Symfony (yaml, xml, annotations...). Nous resterons sur le système d'annotations dans ce cours.
+On constate que la route est définie sous forme d'annotations directement au-dessus de la méthode. Il existe plusieurs méthodes pour créer des routes avec Symfony (yaml, xml, annotations...). Nous resterons sur le système d'annotations dans ce cours.
 
 Modifiez cette route pour changer le nom par `article.index`.
 
@@ -48,17 +48,17 @@ Rendez-vous sur `***.lpweb-lannion.fr:7777/article` pour découvrir votre premi�
 
 ### Introduction à Twig
 
-Twig est un moteur de template qui permet d'écrire nos vues très simplement avec une syntaxe plus légère et moins verbeuse que du PHP. Voir la [documentation de Twig](https://twig.symfony.com/)
+Twig est un moteur de template qui permet d'écrire nos vues très simplement avec une syntaxe plus légère et moins verbeuse que du PHP. Voir la [documentation de Twig](https://twig.symfony.com/).
 
-Jetons un oeil à notre vue dans `templates/article/index.html.twig`.
+Jetons un oeil à notre vue dans `templates/article/index.html.twig`.   
 La première ligne permet d'étendre d'un layout de base.
 Ce layout nous permet de définir des sections globales au site pour ne pas à avoir à les dupliquer (head, menu, footer...).
 
-Il suffit de définir des `block` via `{% block body %}{% endblock %}` dans le layout et je pourrai ensuite l'utiliser dans ma vue de la même manière.
+Il suffit de définir des `block` via `{% block body %}{% endblock %}` dans le layout et je pourrai ensuite les utiliser dans ma vue de la même manière.
 
 Tout le code que j'inclurai dans un block sera intégré au block du layout.
 
-Nous constatons que dans la vue on affiche `{{ controller_name }}`, c'est une variable qui vient directement du Controlleur, vous pouvez changer sa valeur dans notre Controller et rechargez la page.
+Nous constatons que dans la vue, on affiche `{{ controller_name }}`, c'est une variable qui vient directement du Controlleur, vous pouvez changer sa valeur dans notre Controller et rechargez la page.
 
 Twig utilise la syntaxe `{{ }}` pour afficher quelque chose et `{% %}` pour utiliser une fonction du langage.
 
@@ -69,11 +69,10 @@ Exemple:
     {% if users | length > 0 %}
         <section class="user">
             {% for user in users %}
-            <div class="card-user">
-                <h3>{{ user.name | upper }}</h3>
-                <p>{{ user.description }}</p>
-            </div>
-    
+                <div class="card-user">
+                    <h3>{{ user.name | upper }}</h3>
+                    <p>{{ user.description }}</p>
+                </div>
             {% endfor %}
         </section>
     {% else %}
@@ -84,7 +83,7 @@ Exemple:
 
 Vous pouvez inclure Bootstrap dans le fichier `base.html.twig` via un CDN.
 
-Ajoutez un fichier `templates/partials/_nav.html.twig` et ajouter un menu avec 3 liens :
+Ajoutez un fichier `templates/partials/_nav.html.twig` et ajoutez un menu avec trois liens :
 - **Accueil** sur "/"
 - **Article** sur "/article"
 - **Catégorie** sur "/category"
@@ -99,7 +98,7 @@ Importez ce fichier `_nav.html.twig` dans le fichier `base.html.twig` avec la fo
 ### Créer des données
 
 Jusqu'ici, nous avons parlé du Controlleur et de la Vue, il manque donc la partie Model (la liaison entre notre application et la base de données).  
-Dans Symfony, une entité représente une table. Nous allons commencer par créer une entité **Article**, qui possèdera les champs suivants :
+Dans Symfony, une entité représente une table. Nous allons commencer par créer une entité **Article**, qui possédera les champs suivants :
 
 | Nom       | Type         | Nullable |
 | --------- | ------------ | -------- |
@@ -110,7 +109,7 @@ Dans Symfony, une entité représente une table. Nous allons commencer par crée
 
 Pour créer une entité, utilisez la console :
 
-```
+```bash
 php bin/console make:entity
 ```
 
@@ -121,8 +120,6 @@ Deux nouveaux fichiers sont ensuite créés :
 
 Le premier représente la table sous forme d'une classe avec ses getters/setters, on remarque d'ailleurs que Symfony a généré tout le code pour nous.  
 Le deuxième fichier représente le "repository", c'est-à-dire le fichier de sélection, c'est la qu'on écrira nos requêtes pour attaquer la base de données.
-
-> Symfony fait le choix de séparer la classe du repository, c'est pratique pour s'y retrouver, surtout sûr de gros projets. D'autres Frameworks font tout directement dans le Model, c'est le cas de Laravel par exemple.
 
 Effectuez la commande `make:migration` pour demander à Symfony de vérifier s'il existe des différences entre notre structure SQL actuelle et nos fichiers dans le répertoire `src/Entity`. Symfony va ensuite générer une migration contenant des instructions SQL si celui-ci détecte des différences.
 
@@ -144,7 +141,7 @@ docker run --rm --interactive --tty \
   composer require orm-fixtures fzaninotto/faker --dev
 ```
 
-On rajoute ici le `--dev` car ces dépendances ne seront pas utilisées en production.
+On ajoute ici le `--dev` car ces dépendances ne seront pas utilisées en production.
 
 Nous pouvons maintenant créer notre Fixture `ArticleFixtures` à l'aide de la commande `make:fixtures`. Voilà à quoi ressemble mon fichier :
 
@@ -156,10 +153,11 @@ public function load(ObjectManager $manager)
     for ($i = 1; $i <= 10; $i++) {
         $article = new Article();
 
+        $sentence = $faker->sentence(4);
         $title = substr($sentence, 0, strlen($sentence) - 1);
         $article->setTitle($title)
-                ->setAuthor($faker->name)
-                ->setContent($faker->text(500))
+                ->setAuthor($faker->name())
+                ->setContent($faker->text(3000))
                 ->setCreatedAt($faker->dateTimeThisYear());
 
         $manager->persist($article);
@@ -184,7 +182,7 @@ Ouvrez ensuite votre PhpMyAdmin pour découvrir les données que nous venons de 
 
 ---
 
-### Utilisons ces données avec doctrine
+### Utilisons ces données avec Doctrine
 
 Pour utiliser les données d'une entité, nous avons besoin de son Repository.
 
@@ -193,7 +191,7 @@ $articleRepository = $this->getDoctrine()->getRepository(Article::class);
 ```
 
 Nous avons maintenant accès au Repository de la classe Article, pour rappel, celui-ci se trouve dans `src/Repository/ArticleRepository`. Par défaut, aucune méthode n'est disponible dans ce fichier. Si on regarde plus en profondeur dans le code, nous pouvons voir que notre Repository étends de la classe `EntityRepository` dans le dossier `/vendor/doctrine/orm/lib/Doctrine/ORM/`.  
-NDans ce fichier, nous pouvons voir que beaucoup de méthodes sont définies pour nous : **find**, **findOneBy**, **finAll**...
+Dans ce fichier, nous pouvons voir que beaucoup de méthodes sont définies pour nous : **find**, **findOneBy**, **findAll**...
 
 Commençons par récupérer tous les articles :
 
@@ -228,7 +226,7 @@ Utilisez Twig pour afficher ensuite la liste des articles dans votre vue.
 
 Pour chaque article :
 -   affichez son titre avec un lien vers `/articles/{id de l'article}`
--   affichez les 300 premiers caractères du contenu suvivi d'un `... voir plus` (filtre slice)
+-   affichez les 300 premiers caractères du contenu suivi d'un `... voir plus` (filtre slice)
 -   le **...voir plus** est également un lien vers `/articles/{id de l'article}`
 -   affichez la date avec un format 24/12/2019 ainsi que le nom de l'auteur
 
@@ -250,31 +248,49 @@ if (!$article) {
 Cette nouvelle vue doit étendre du template `base.html.twig`, vous afficherez : le titre de l'article, son contenu, son auteur et sa date de création avec le format 24/12/2019. Ajoutez également un lieu **retour** qui permet de retourner à la liste des articles.
 
 Profitez-en pour modifier les liens dans notre template `index.html.twig` avec la fonction `path` de Twig plutôt que d'avoir des liens en dur. 
-`<a href="{{ path('article.show', {'id' : article.id}) }}">`
+`<a href="{{ path('article.show', {id : article.id}) }}">`
 Cette méthode permet de changer les urls des routes sans avoir à modifier toutes les urls dans notre code.
 
 ---
 
-### Ajout d'un champ slug
+### Mise en place d'une pagination
 
-Actuellement, nos urls ne sont pas très jolies : `mon-site/article/1`, en général, on affiche un slug équivalent au titre de l'article : `Titre de mon 1er Article` = `titre-de-mon-1er-article`.
+Actuellement, nous n'avons que 10 articles dans notre base de données, modifiez la boucle du fichier `ArticleFixture` pour générer une centaine d'articles et relancez la commande `doctrine:fixtures:load`.
 
-Modifiez l'entité `Article` pour ajouter un champ `slug` ainsi que son getter/setter.
-On effectue ensuite la commande `make:migration` pour que Symfony détecte le changement de la structure et génère un fichier de migration.
-Regardez ce nouveau fichier de migration et si il vous semble convenable, utilisez la commande `doctrine:migrations:migrate`.
+Sur la page `article.index`, nous voyons maintenant que tous nos articles sont chargés, ce n'est pas très pratique. Pour remédier à ce problème, nous allons mettre en place un système de pagination qui affichera 10 articles par page.
 
-Vous pouvez vérifier la nouvelle structure dans PHPMyAdmin. Dans notre fichier `src/DataFixtures/ArticleFixtures` nous devons maintenant mettre à jour la génération de nos articles avec ce nouveau champ `slug`.
+Nous allons utiliser le paquet [KnpPaginatorBundle](https://github.com/KnpLabs/KnpPaginatorBundle) pour nous aider à mettre en place cette pagination. 
 
-Dans le fichier `ArticleFixtures`, rajoutez le slug. Faker possède déjà une fonction slug pour nous :
-```php
-$article
-    ->setTitle($title)
-    ->setSlug($faker->slug())
+Utilisez l'image Docker de Composer pour l'installer :
+```bash
+docker run --rm --interactive --tty \
+  --volume $PWD:/app \
+  --user $(id -u):$(id -g) \
+  composer require knplabs/knp-paginator-bundle
 ```
 
-Générez de nouveaux articles avec la commande `doctrine:fixtures:load`.
+Dans la méthode `index` de votre Controller, vous pouvez maintenant injecter ce "paginator" :
+```php
+public function index(ArticleRepository $articleRepository, PaginatorInterface $paginator) 
+```
 
-Replacez la route `article.show` avec le slug `@Route("/article/{slug}", name="article.show")`. 
-Vous pouvez ensuite récupérer un article avec son slug via la fonction **findOneBy** de Doctrine : `$repository->findOneBy(['slug' => $slug]);`.
+Vous avez accès à une méthode `paginate` sur ce "paginator" qui prend 3 arguments : l'ensemble des articles, la page souhaitée, et le nombre d'articles à afficher par page.
+Vous pouvez récupérer la page souhaitée via l'objet `Request` : `$request->query->getInt('page', 1)`. Ici, si aucune page n'est renseignée dans l'url, c'est la première page qui est prise par défaut. 
 
-Il ne reste plus qu'à modifier les liens sur le template `article/index.html.twig` avec le slug et vérifier que tout fonctionne à nouveau.
+Pour afficher la listes des pages disponibles sur la vue, vous pouvez utiliser la fonction `knp_pagination_render` :
+```html
+{{ knp_pagination_render(articles) }}
+```
+
+Vous pouvez modifier le thème de base par celui de Bootstrap. Pour cela, vous devez ajouter le fichier de configuration `knp_paginator.yml` dans le dossier `config/packages/`, vous trouverez le contenu du fichier sur le github du projet.  
+Dans la section `template`, modifiez la valeur de `pagination` avec `@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig`.
+
+Vous avez maintenant une belle pagination sur votre page. Pour modifier les labels "label_previous" et "label_next", vous devez ajouter un fichier `KnpPaginatorBundle.fr.yml` dans le dossier `translations` et de renseigner une valeur pour ces deux clés :
+
+```yaml
+label_next: Suivant
+label_previous: Précédent
+```
+
+Si vous ne voyez pas de changements, c'est que vous n'avez pas dit à Symfony que votre projet était en Français. Vous pouvez modifier la valeur par défaut dans le fichier `config/packages/translations.yaml`.
+
