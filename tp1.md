@@ -225,9 +225,9 @@ Nous pouvons ensuite renvoyer la variable `$articles` à notre vue, comme l'exem
 Utilisez Twig pour afficher ensuite la liste des articles dans votre vue.
 
 Pour chaque article :
--   affichez son titre avec un lien vers `/articles/{id de l'article}`
+-   affichez son titre avec un lien vers `/article/{id de l'article}`
 -   affichez les 300 premiers caractères du contenu suivi d'un `... voir plus` (filtre slice)
--   le **...voir plus** est également un lien vers `/articles/{id de l'article}`
+-   le **...voir plus** est également un lien vers `/article/{id de l'article}`
 -   affichez la date avec un format 24/12/2019 ainsi que le nom de l'auteur
 
 ---
