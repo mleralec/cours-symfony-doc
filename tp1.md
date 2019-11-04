@@ -277,15 +277,15 @@ public function index(ArticleRepository $articleRepository, PaginatorInterface $
 Vous avez accès à une méthode `paginate` sur ce "paginator" qui prend 3 arguments : l'ensemble des articles, la page souhaitée, et le nombre d'articles à afficher par page.
 Vous pouvez récupérer la page souhaitée via l'objet `Request` : `$request->query->getInt('page', 1)`. Ici, si aucune page n'est renseignée dans l'url, c'est la première page qui est prise par défaut. 
 
-Pour afficher la listes des pages disponibles sur la vue, vous pouvez utiliser la fonction `knp_pagination_render` :
+Pour afficher la liste des pages disponibles sur la vue, vous pouvez utiliser la fonction `knp_pagination_render` :
 ```html
 {{ knp_pagination_render(articles) }}
 ```
 
-Vous pouvez modifier le thème de base par celui de Bootstrap. Pour cela, vous devez ajouter le fichier de configuration `knp_paginator.yml` dans le dossier `config/packages/`, vous trouverez le contenu du fichier sur le github du projet.  
+Vous pouvez modifier le thème de base par celui de Bootstrap. Pour cela, vous devez ajouter le fichier de configuration `knp_paginator.yml` dans le dossier `config/packages/`, vous trouverez le contenu du fichier sur le Github du projet.  
 Dans la section `template`, modifiez la valeur de `pagination` avec `@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig`.
 
-Vous avez maintenant une belle pagination sur votre page. Pour modifier les labels "label_previous" et "label_next", vous devez ajouter un fichier `KnpPaginatorBundle.fr.yml` dans le dossier `translations` et de renseigner une valeur pour ces deux clés :
+Vous avez maintenant une belle pagination sur votre page. Pour modifier les labels "label_previous" et "label_next", vous devez ajouter un fichier `KnpPaginatorBundle.fr.yml` dans le dossier `translations` et renseigner une valeur pour ces deux clés :
 
 ```yaml
 label_next: Suivant
