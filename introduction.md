@@ -76,7 +76,14 @@ environment:
 Ici, nous demandons à Docker de récupérer les variables d'environnement présentent dans le fichier `.env` à la racine de notre projet. Symfony utilise également ce système de fichier "DotEnv" pour définir les variables d'environnement d'un projet. Vous devez donc définir ces différentes variables dans votre fichier `.env` sinon Docker remontera une erreur.
 
 Vous devez également remplacer la ligne qui commence par `DATABASE_URL=...` avec la ligne suivante pour utiliser les variables d'environnement que vous venez de définir : 
--   `DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}`
+
+```env
+MYSQL_USER=TODO
+MYSQL_PASSWORD=TODO
+MYSQL_DATABASE=TODO
+
+DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}
+```
 
 Vous pouvez ensuite lancer vos conteneurs via docker-compose : `docker-compose up -d`
 

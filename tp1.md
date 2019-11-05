@@ -130,7 +130,7 @@ Il ne reste plus qu'à vérifier dans PhpMyAdmin que la table Article a bien ét
 
 > Ce système de migrations est très performant et utilisé par l'ensemble des Frameworks modernes. Celui-ci permet de récupérer le projet via un repo git, et de lancer la commande `doctrine:migrations:migrate` pour effectuer toutes les migrations du projet et avoir la structure de la base de données à jour avec le projet.
 
-Nous allons maintenant utiliser une librairie qui nous permet de remplir notre table avec une commande Symfony plutôt que d'avoir à créer les articles directement dans PhpMyAdmin. Pour cela nous avons besoin de [orm-fixtures](https://packagist.org/packages/doctrine/doctrine-fixtures-bundle). Nous allons également utiliser une librairie pour générer des données "fake" à notre place, il s'agit de [Faker](https://packagist.org/packages/fzaninotto/faker)
+Nous allons maintenant utiliser une librairie qui nous permet de remplir notre table avec une commande Symfony plutôt que d'avoir à créer les articles directement dans PhpMyAdmin. Pour cela nous avons besoin de [orm-fixtures](https://packagist.org/packages/doctrine/doctrine-fixtures-bundle). Nous allons également utiliser une librairie pour générer des données "fake" à notre place, il s'agit de [Faker](https://packagist.org/packages/fzaninotto/faker).
 
 Comme nous travaillons avec Docker et que composer n'est pas installé sur le serveur, nous allons créer un conteneur temporaire avec l'image Composer pour ajouter nos 2 dépendances :
 
