@@ -21,4 +21,13 @@
   - [Traiter le formulaire](tp2.md#traiter-le-formulaire)
   - [Validation](tp2.md#validation)
 
+- TP 3
+
+  - [Éditer un article](tp3.md#Éditer-un-article)
+  - [Supprimer un article](tp3.md#supprimer-un-article)
+  - [Alertes flash](tp3.md#alertes-flash)
+  - [Compteur de likes](tp3.md#compteur-de-likes)
+  - [Retourner une réponse en JSON](tp3#retourner-une-réponse-en-json)
+  - [Page d'accueil](tp3.md#page-d39accueil)
+
 - [Liens utiles](links.md)

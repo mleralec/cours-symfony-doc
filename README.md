@@ -3,5 +3,6 @@
 - [Introduction](introduction.md)
 - [TP 1](tp1.md)
 - [TP 2](tp2.md)
+- [TP 3](tp3.md)
 
 - [Liens utiles](links.md)
