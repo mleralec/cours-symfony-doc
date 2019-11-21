@@ -30,4 +30,13 @@
   - [Retourner une réponse en JSON](tp3#retourner-une-réponse-en-json)
   - [Page d'accueil](tp3.md#page-d39accueil)
 
+- TP 4
+
+  - [Authentification](tp4.md#authentification)
+  - [L'entité User](tp4.md#l39entité-user)
+  - [Formulaire d'inscription](tp4.md#formulaire-d39inscription)
+  - [Page de connexion](tp4.md#page-de-connexion)
+  - [Déconnexion](tp4.md#déconnexion)
+  - [Protéger des routes](tp4.md#protéger-des-routes)
+
 - [Liens utiles](links.md)
