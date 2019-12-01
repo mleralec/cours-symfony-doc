@@ -2,6 +2,7 @@
 
 - [ ] Authentification
 - [ ] L'entité User
+- [ ] Formulaire d'inscription
 - [ ] Page de connexion
 - [ ] Déconnexion
 - [ ] Protéger des routes

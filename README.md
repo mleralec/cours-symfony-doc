@@ -5,5 +5,6 @@
 - [TP 2](tp2.md)
 - [TP 3](tp3.md)
 - [TP 4](tp4.md)
+- [Projet](projet.md)
 
 - [Liens utiles](links.md)
