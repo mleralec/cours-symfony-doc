@@ -40,7 +40,7 @@ Créez une entité Product avec les champs suivants :
 | description | text         | no       |
 | createdAt   | datetime     | no       |
 
-Créez ensuite une fixture `ProductFixtures` dans laquelle vous allez créer une vingtaine de produits.  
+Créez ensuite une fixture `ProductFixtures` dans laquelle vous allez créer une dizaine de produits.  
 Vous pouvez utiliser la méthode `randomNumber(2)` de *Faker* pour générer un prix.
 
 ---
@@ -54,6 +54,8 @@ Pour chaque produit, vous afficherez :
 -   Les 300 premiers caractères de la description suivi d'un `... voir plus`
 -   Le **...voir plus** est également un lien vers `/product/{id}`
 -   La date de création avec le format 24/12/2019
+
+> Vous n'avez pas besoin de mettre en place une pagination
 
 Créez également la page `/product/{id}` qui affiche toutes les informations d'un produit avec sa description complète. Vous ajouterez un lien *retour* sur cette page qui redirige vers la liste des produits.
 
